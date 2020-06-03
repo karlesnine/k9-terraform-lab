@@ -1,0 +1,21 @@
+#cloud-config
+runcmd:
+- chown -R ubuntu.ubuntu /root/
+- /usr/bin/cat /home/ubuntu/.ssh/authorized_keys > /root/.ssh/authorized_keys
+- chown -R root.root /root/
+- export DEBIAN_FRONTEND=noninteractive
+- /usr/bin/apt-get update && /usr/bin/apt-get upgrade -y
+- /usr/bin/apt-get install -y docker.io python3-pip python3-minimal python3-apt nvme-cli
+- /usr/bin/pip3 install boto boto3 "urllib3<1.24" awscli
+- /bin/systemctl enable --now docker
+- /usr/bin/apt-get autoremove --purge python2*
+- /usr/bin/apt autoremove --purge
+- /usr/bin/apt-get clean
+- /usr/local/bin/aws --region eu-central-1 s3 cp s3://${s3_bucket_setting_name}/ /tmp/ --recursive --exclude "*" --include "*.service"
+- for I in $(ls -1 /tmp/*.service | /bin/sed 's/\/tmp\///g' ); do /bin/mv /tmp/$I /lib/systemd/system/; /bin/systemctl enable /lib/systemd/system/$I;/bin/systemctl daemon-reload ; done
+- /usr/local/bin/aws --region eu-west-1 s3 cp s3://${s3_bucket_setting_name}/ /tmp/ --recursive --exclude "*" --include "*.sh"
+- for I in $(ls -1 /tmp/*.sh | /bin/sed 's/\/tmp\///g' ); do /bin/mv /tmp/$I /usr/local/bin/; /bin/chmod a+x /usr/local/bin/$I; done
+- /usr/sbin/service SetHostName start
+- /usr/sbin/service DnsInstanceRecord start
+- /usr/sbin/service MountLocalStorage start
+- sudo touch /tmp/UserDataDone.txt

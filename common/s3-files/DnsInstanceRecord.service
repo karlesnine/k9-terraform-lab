@@ -1,0 +1,21 @@
+#
+# FOR RUN ON UBUNTU LINUX >= 16.04
+#
+
+[Unit]
+Description=Auto Set or Clean Dns Instance Record
+Wants=multi-user.target network.target
+After=multi-user.target network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /usr/local/bin/SetDnsInstanceRecord.sh
+ExecStop=/bin/bash /usr/local/bin/CleanDnsInstanceRecord.sh
+RemainAfterExit=yes
+RemainAfterExit=yes
+TimeoutStartSec=15
+TimeoutStopSec=15
+
+
+[Install]
+WantedBy=multi-user.target
