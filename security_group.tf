@@ -3,8 +3,9 @@ data "http" "myip" {
 }
 
 resource "aws_default_security_group" "default" {
-  vpc_id = aws_default_vpc.default.id
-
+  # vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.default.id
+  
   ingress {
     # TLS (change to whatever ports you need)
     from_port = 22
@@ -36,7 +37,8 @@ output "sg_default_id" {
 resource "aws_security_group" "swarm_manager" {
   name        = "swarm_manager"
   description = "swarm + remote mgmt"
-  vpc_id = aws_default_vpc.default.id
+  # vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.default.id
 
   ingress {
     # TLS (change to whatever ports you need)
@@ -101,7 +103,8 @@ output "sg_swarm_manager_id" {
 resource "aws_security_group" "web_front" {
   name        = "web_front"
   description = "web front"
-  vpc_id = aws_default_vpc.default.id
+  # vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.default.id
 
   ingress {
     # TLS (change to whatever ports you need)

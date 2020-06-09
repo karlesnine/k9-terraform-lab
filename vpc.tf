@@ -1,6 +1,6 @@
-resource "aws_default_vpc" "default" {
-  tags = {
-    Name = "Default VPC"
+data "aws_vpc" "default" {
+  filter {
+    name   = "tag:Name"
+    values = ["Default VPC"]
   }
 }
-
