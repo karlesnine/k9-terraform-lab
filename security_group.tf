@@ -37,11 +37,9 @@ output "sg_default_id" {
 resource "aws_security_group" "swarm_manager" {
   name        = "swarm_manager"
   description = "swarm + remote mgmt"
-  # vpc_id = aws_default_vpc.default.id
   vpc_id = data.aws_vpc.default.id
 
   ingress {
-    # TLS (change to whatever ports you need)
     from_port = 2377
     to_port   = 2377
     protocol  = "tcp"
@@ -50,7 +48,6 @@ resource "aws_security_group" "swarm_manager" {
   }
 
   ingress {
-    # TLS (change to whatever ports you need)
     from_port = 7946
     to_port   = 7946
     protocol  = "tcp"
@@ -59,7 +56,6 @@ resource "aws_security_group" "swarm_manager" {
   }
 
   ingress {
-    # TLS (change to whatever ports you need)
     from_port = 7946
     to_port   = 7946
     protocol  = "udp"
@@ -100,27 +96,10 @@ output "sg_swarm_manager_id" {
   value = aws_security_group.swarm_manager.id
 }
 
-resource "aws_security_group" "web_front" {
-  name        = "web_front"
-  description = "web front"
-  # vpc_id = aws_default_vpc.default.id
+resource "aws_security_group" "myip" {
+  name        = "myip"
+  description = "SG for my Ip"
   vpc_id = data.aws_vpc.default.id
-
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
-    description = "web"
-    cidr_blocks = ["172.31.0.0/16"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["172.31.0.0/16"]
-  }
 
   ingress {
     from_port   = 0
@@ -129,13 +108,19 @@ resource "aws_security_group" "web_front" {
     cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+  }
 
   tags = {
-    Name     = "web_front"
+    Name     = "myip"
     Project  = var.your_project_name
   }
 }
 
-output "sg_web_front_id" {
-  value = aws_security_group.web_front.id
+output "sg_myip_id" {
+  value = aws_security_group.myip.id
 }

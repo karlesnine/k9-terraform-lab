@@ -46,7 +46,7 @@ resource "aws_instance" "ec2_master" {
   security_groups = [
     aws_security_group.swarm_manager.name,
     aws_default_security_group.default.name,
-    aws_security_group.web_front.name
+    aws_security_group.myip.name
   ]
 
   root_block_device {
@@ -115,7 +115,7 @@ resource "aws_instance" "ec2_workers" {
   security_groups = [
     aws_security_group.swarm_manager.name,
     aws_default_security_group.default.name,
-    aws_security_group.web_front.name
+    aws_security_group.myip.name
   ]
 
   root_block_device {
