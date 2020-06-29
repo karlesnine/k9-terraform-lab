@@ -19,16 +19,14 @@ data "template_file" "userdata" {
 # MASTER
 #
 resource "aws_instance" "ec2_master" {
-  # count = 1
+  count = 1
   ami           = var.aws_ec2_ami
   instance_type = var.aws_ec2_instance_type
   key_name      = var.aws_ssh_key_name
-  # user_data     = file("${path.module}/common/files/userData.tpl")
   user_data = data.template_file.userdata.rendered
   monitoring                  = false
   associate_public_ip_address = true
   source_dest_check           = true
-  # iam_instance_profile        = ""
   ebs_optimized               = true
   iam_instance_profile = aws_iam_instance_profile.instance_setting_profile.name
    depends_on = [
@@ -62,14 +60,14 @@ resource "aws_instance" "ec2_master" {
   }
 
   tags = {
-    Name     = "master.0"
+    Name     = "master.${count.index < 9 ? "0" : ""}${count.index + 1}"
     Os       = "ubuntu"
     Project  = var.your_project_name
     Services = "node-exporter:docker"
   }
 
   volume_tags = {
-    Name    = "m0"
+    Name     = "master.${count.index < 9 ? "0" : ""}${count.index + 1}"
     Project = var.your_project_name
   }
 }
@@ -92,12 +90,10 @@ resource "aws_instance" "ec2_workers" {
   ami           = var.aws_ec2_ami
   instance_type = var.aws_ec2_instance_type
   key_name      = var.aws_ssh_key_name
-  # user_data     = file("${path.module}/common/files/userData.tpl")
   user_data = data.template_file.userdata.rendered
   monitoring                  = false
   associate_public_ip_address = true
   source_dest_check           = true
-  # iam_instance_profile        = ""
   ebs_optimized               = true
   iam_instance_profile = aws_iam_instance_profile.instance_setting_profile.name
    depends_on = [
@@ -131,14 +127,14 @@ resource "aws_instance" "ec2_workers" {
   }
 
   tags = {
-    Name     = "worker.${count.index}"
+    Name     = "worker.${count.index < 9 ? "0" : ""}${count.index + 1}"
     Os       = "ubuntu"
     Project  = var.your_project_name
     Services = "node-exporter:docker"
   }
 
   volume_tags = {
-    Name    = "${count.index}"
+    Name     = "worker.${count.index < 9 ? "0" : ""}${count.index + 1}"
     Project = var.your_project_name
   }
 }
