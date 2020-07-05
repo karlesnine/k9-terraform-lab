@@ -1,17 +1,14 @@
 #!/bin/bash
-# (optional) You might need to set your PATH variable at the top here
-# depending on how you run this script
-#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-#
-# FOR RUN ON AMZ LINUX 1 - Elasticbeanstalk
-# OR FOR Ubuntu >= 16;04
-#
-
-
-
 set -e
 
+#
+# RUN ON AMZ LINUX 1 - Elasticbeanstalk
+# RUN ON Ubuntu >= 16;04
+#
+
+#
+# Information gathering from AWS about the intance
+# 
 INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | awk '{print substr($1, 0, length($1)-1)}')
 ID_FROM_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4 | cut -d "." -f3-4 | sed 's/\./-/g')
@@ -27,6 +24,7 @@ ENV_NAME=$(aws ec2 describe-tags \
             "Name=key,Values=elasticbeanstalk:environment-name" \
     --region "${REGION}" \
     --query "Tags[*].Value")
+
 # BUILD THE HOSTNAME
 # Hostname come from tag name for ubuntu instance
 # Hostname come from elasticbeanstalk env name and IP for elasticbeanstalk instance amz linux
