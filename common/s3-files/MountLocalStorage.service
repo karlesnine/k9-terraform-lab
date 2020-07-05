@@ -3,7 +3,7 @@
 #
 
 [Unit]
-Description=Mount local disk
+Description=Mount local SSD disk
 Before=docker.service
 
 [Service]
