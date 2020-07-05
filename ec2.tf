@@ -62,14 +62,14 @@ resource "aws_instance" "ec2_master" {
   }
 
   tags = {
-    Name     = "master.0"
+    Name     = "master0"
     Os       = "ubuntu"
     Project  = var.your_project_name
     Services = "node-exporter:docker"
   }
 
   volume_tags = {
-    Name    = "m0"
+    Name    = "master0"
     Project = var.your_project_name
   }
 }
@@ -131,14 +131,14 @@ resource "aws_instance" "ec2_workers" {
   }
 
   tags = {
-    Name     = "worker.${count.index}"
+    Name     = "worker${count.index}"
     Os       = "ubuntu"
     Project  = var.your_project_name
     Services = "node-exporter:docker"
   }
 
   volume_tags = {
-    Name    = "${count.index}"
+    Name    = "worker${count.index}"
     Project = var.your_project_name
   }
 }
