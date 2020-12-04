@@ -127,14 +127,14 @@ resource "aws_instance" "ec2_workers" {
   }
 
   tags = {
-    Name     = "worker${count.index}"
+    Name     = "worker${count.index < 9 ? "0" : ""}${count.index + 1}"
     Os       = "ubuntu"
     Project  = var.your_project_name
     Services = "node-exporter:docker"
   }
 
   volume_tags = {
-    Name    = "worker${count.index}"
+    Name    = "worker${count.index < 9 ? "0" : ""}${count.index + 1}"
     Project = var.your_project_name
   }
 }
